@@ -1,0 +1,22 @@
+select * from "dC"."vPresupuesto2019";
+
+DROP VIEW "dC"."vPresupuesto2019";
+
+CREATE OR REPLACE VIEW "dC"."vPresupuesto2019" AS 
+select 
+   (select distinct mki.description
+      from public.mis_report_kpi_expression mkei
+      join mis_report_kpi mki on mki.id=mkei.kpi_id
+	  join mis_budget mbi on mbi.report_id=mki.report_id
+      where mbi.id=1 and mkei.name not like '%[%' and strpos(mkei.name,mk.name)>0
+   ) as group, 
+   mk.description, aaa.name branch, msk.name as Business, 
+   extract(month from mbi.date_from) as month, mbi.amount
+   from mis_budget_item mbi
+   join account_analytic_account aaa on aaa.id=mbi.analytic_account_id
+   join mis_report_kpi_expression mke on mke.id=kpi_expression_id
+   join mis_report_kpi mk on mk.id=mke.kpi_id
+   left join mis_report_subkpi msk on msk.id=mke.subkpi_id
+   where budget_id=1 
+   order by mk.description, aaa.name, extract(month from date_from);
+   
