@@ -1,4 +1,4 @@
-select * from "dC"."vPptoServices19";
+﻿select * from "dC"."vPptoServices19";
 
 DROP VIEW "dC"."vPptoServices19";
 
@@ -18,5 +18,5 @@ select
    join mis_report_kpi_expression mke on mke.id=kpi_expression_id
    join mis_report_kpi mk on mk.id=mke.kpi_id
    left join mis_report_subkpi msk on msk.id=mke.subkpi_id
-   where budget_id=1;
+   where budget_id=1 and msk.name in ('idn','ifi','erp');
    
