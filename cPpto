@@ -10,7 +10,7 @@ select
 	  join mis_budget mbi on mbi.report_id=mki.report_id
       where mbi.id=1 and mkei.name not like '%[%' and strpos(mkei.name,mk.name)>0
    ) as pr01, 
-   mk.description as pr02, aaa.name as analytic, msk.name as business, 
+   mk.description as pr02, aaa.name as analytic, upper(msk.name) as business, 
    to_char(mbi.date_from,'Mon') as month, extract(month from mbi.date_from) monthnbr,
    mbi.amount as budget
    from mis_budget_item mbi
