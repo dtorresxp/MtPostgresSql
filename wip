@@ -1,22 +1,5 @@
-﻿delete from account_analytic_tag_account_move_line_rel aatamlr 
-where 
-   aatamlr.account_move_line_id in (
-      select distinct aml.id from account_move_line aml 
-      join account_move am on am.id=aml.move_id
-      where am.id in (150538,150536,150537,150535)
-   )
+﻿select * from account_invoice where id=34827
+update account_invoice set user_id=83 where id=34827
 
-insert into account_analytic_tag_account_move_line_rel (account_move_line_id, account_analytic_tag_id) 
-   select aml.id, vampb.business_id
-   from account_move_line aml 
-   join account_move am on am.id=aml.move_id
-   join public."vAccountMove_ProjBuss" vampb on vampb.name=aml.name
-   join account_account aa on aa.id=aml.account_id
-   where am.id in (150538,150536,150537,150535) and aml.user_type_id not in (1,2)
-on conflict do nothing
-
-
-select * from public."vAccountMove_ProjBuss"
-account_analytic_tag_account_move_line_rel aatamlr
-account_move_line_id
-account_analytic_tag_id
+select * from sale_order where id=1366
+update sale_order set user_id=83 where id=1366

@@ -1,4 +1,4 @@
-select * from "dC"."vEdoResServices19";
+﻿select * from "dC"."vEdoResServices19";
 DROP VIEW "dC"."vEdoResServices19";
 CREATE OR REPLACE VIEW "dC"."vEdoResServices19" AS 
 select 
@@ -22,7 +22,8 @@ join account_move am on am.id=aml.move_id
 join account_account aa on aa.id=aml.account_id
 left join account_analytic_account aaa on aaa.id=aml.analytic_account_id
 join account_account_type aatype on aatype.id=aa.user_type_id
-where aml.company_id=1 and aml.date between '2019-01-01' and '2019-04-30' and aml.journal_id != 77 and 
+where aml.company_id=1 and am.state='posted' and aml.date between '2019-01-01' and '2019-04-30' and 
+   ((aml.journal_id=77 and aa.name like 'No Deducibles IVA%') or aml.journal_id!=77) and 
    aa.id in (
       select distinct aaati.account_account_id from account_account_account_tag aaati 
          join account_account_tag aati on aati.id=aaati.account_account_tag_id 

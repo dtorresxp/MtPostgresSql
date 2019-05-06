@@ -1,4 +1,6 @@
-﻿select name, state, invoice_status state from sale_order where id in (3863,3862,3861,3858,3728,3003,1967,870,450)
+﻿select name, state, invoice_status state from sale_order where id in (1218,1727,1512,531,732)
 % state = sale, done, sent, draft, cancel
+% update sale_order set invoice_status='invoiced', state='done' where id in (1218,1727,1512,531,732)
 
-% update sale_order set invoice_status='invoiced', state='done' where id in (3863,3862,3861,3858,3728,3003,1967,870,450)
+
+1218,1727,1512,531,732
