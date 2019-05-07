@@ -2,11 +2,11 @@
 DROP VIEW "dC"."vEdoResServices19";
 CREATE OR REPLACE VIEW "dC"."vEdoResServices19" AS 
 select 
-   (select distinct substring(aat.name,5,20) 
+   (select distinct substring(aat.name,5,25) 
       from account_account_tag aat 
       join account_account_account_tag aaat on aaat.account_account_tag_id=aat.id
       where aaat.account_account_id=aa.id and left(aat.name,4)='pr01' limit 1) as pr01,
-   (select distinct substring(aat.name,5,20) 
+   (select distinct substring(aat.name,5,25) 
       from account_account_tag aat 
       join account_account_account_tag aaat on aaat.account_account_tag_id=aat.id
       where aaat.account_account_id=aa.id and left(aat.name,4)='pr02' limit 1) as pr02, 
@@ -22,7 +22,7 @@ join account_move am on am.id=aml.move_id
 join account_account aa on aa.id=aml.account_id
 left join account_analytic_account aaa on aaa.id=aml.analytic_account_id
 join account_account_type aatype on aatype.id=aa.user_type_id
-where aml.company_id=1 and am.state='posted' and aml.date between '2019-01-01' and '2019-04-30' and 
+where aml.company_id=1 and am.state='posted' and aml.date between '2019-01-01' and '2019-12-30' and 
    ((aml.journal_id=77 and aa.name like 'No Deducibles IVA%') or aml.journal_id!=77) and 
    aa.id in (
       select distinct aaati.account_account_id from account_account_account_tag aaati 
@@ -33,6 +33,6 @@ order by am.name ;
 select * from "dC"."vEdoResPptoServices19";
 DROP VIEW "dC"."vEdoResPptoServices19";
 CREATE OR REPLACE VIEW "dC"."vEdoResPptoServices19" AS 
-select pr01, pr02, analytic, business, to_char(date,'Mon') as month, extract(month from date) monthnbr, sum(balance) as balance
+select pr01, pr02, analytic, business, date_trunc('month',date) as date, sum(balance) as balance
 from "dC"."vEdoResServices19"
-group by pr01, pr02, analytic, business, to_char(date,'Mon'), extract(month from date);
+group by pr01, pr02, analytic, business, date_trunc('month',date);
