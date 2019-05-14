@@ -19,6 +19,7 @@ select
    where budget_id=1 and msk.name in ('idn','ifi','erp');
    
 ****** Adding 
+select * from "dC"."vPptoConEdoResServices19";
 DROP VIEW "dC"."vPptoConEdoResServices19";
 CREATE OR REPLACE VIEW "dC"."vPptoConEdoResServices19" AS 
 select case when p.pr01 is null then 'null ppto' else 'not null ppto' end as idt, 

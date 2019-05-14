@@ -1,5 +1,5 @@
 ﻿select * from "dC"."vEdoResServices19";
-DROP VIEW "dC"."vEdoResServices19";
+DROP VIEW "dC"."vEdoResServices19" CASCADE;
 CREATE OR REPLACE VIEW "dC"."vEdoResServices19" AS 
 select 
    (select distinct substring(aat.name,5,25) 
@@ -16,7 +16,20 @@ select
       join account_analytic_tag_account_move_line_rel aatamlr on aatamlr.account_analytic_tag_id = aat.id
       where aatamlr.account_move_line_id=aml.id and aat.usage='business' and left(aat.name,2)='B:' limit 1) 
       as Business, 
-   am.name as move, am.date, aatype.name as type, aa.name as account, aml.credit-aml.debit as balance 
+   am.name as move, am.date, aatype.name as type, aa.name as account, aml.credit-aml.debit as balance, 
+   (select distinct name from res_partner rp where rp.id=am.partner_id) as partner, 
+   (select distinct aat.name 
+      from account_analytic_tag aat 
+      join account_analytic_tag_account_move_line_rel aatamlr on aatamlr.account_analytic_tag_id = aat.id
+      where aatamlr.account_move_line_id=aml.id and aat.usage='project' limit 1) 
+      as Project, 
+   (select distinct rp.name 
+      from account_analytic_tag aat 
+      join account_analytic_tag_account_move_line_rel aatamlr on aatamlr.account_analytic_tag_id = aat.id
+      left join account_analytic_tag_res_partner_rel aatrpr on aatrpr.account_analytic_tag_id=aat.id
+      left join res_partner rp on rp.id=aatrpr.res_partner_id
+      where aatamlr.account_move_line_id=aml.id and aat.usage='project' limit 1) 
+      as ProjCustomer 
 from account_move_line aml
 join account_move am on am.id=aml.move_id
 join account_account aa on aa.id=aml.account_id
