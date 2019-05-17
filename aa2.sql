@@ -1,4 +1,4 @@
-% Antes de sacar el reporte hay q eliminar las Cancelaciones de hechas por cambios a los pagos
+﻿% Antes de sacar el reporte hay q eliminar las Cancelaciones de hechas por cambios a los pagos
 % PROVEEDORES ******************************************************************************
 select pp.vat, pp.name, right(am.ref,8) as ref, aml.journal_id, amlat.account_tax_id, ai.date, aml.id,
    sum(case when amlat.account_tax_id=43 then 
@@ -34,13 +34,13 @@ join account_invoice ai on ai.number=right(am.ref,8)
 join account_account aa on aa.id=aml.account_id
 left join res_partner p on aml.partner_id=p.id
 left join res_partner pp on pp.id=p.commercial_partner_id
-where aml.company_id=1 and aml.journal_id in (4,77) and aml.date between '01-feb-2019' and '28-feb-2019' and 
+where aml.company_id=1 and aml.journal_id in (4,77) and aml.date between '01-apr-2019' and '30-apr-2019' and 
    (left(am.ref,2) in ('FP','NP')) and
    (aml.account_id in (349,754,770,3773) or amlat.account_tax_id >0) 
 group by pp.vat, pp.name, right(am.ref,8), aml.journal_id, amlat.account_tax_id, ai.date, aml.id
 order by pp.vat, pp.name, right(am.ref,8), aml.journal_id, amlat.account_tax_id
-******************************************************** PARA REPORTAR:
 
+***WIP ***************************************************** PARA REPORTAR:
 select 
    case when left(cast(ai.date as text),7)='2019-02' then '1902' else 'anter' end as mes,
    'paid' as collect, pp.name as name, aml.name as document, 
@@ -88,7 +88,7 @@ order by case when left(cast(ai.date as text),7)='2019-02' then '1902' else 'ant
 %Listando TIMP del rango seleccionado, renglones sin tag de impuesto asignado (tag_ids) 
 %   & cuenta contable no es de IVA, llave referencia
 					   
-%%%%%%%% ???
+%%%WIP%%%%%%%% ???
 select case when left(aj.code,2)='FP' then 
 		       case when left(am.name,1)='N' then am.name else am.name end
 		    else aml.ref end as name, 
@@ -131,8 +131,8 @@ amlat.account_tax_id = 43=16%Compras, 49=IvaCompraEx, 51=IvaCompra0, 53=16%NoDed
 					   48=3%iISH, 55=2.5%ISH  EstosSeIgnoranNoSeReportanEnDIOT
 
 					   
-					   **************************
-					   
+******************************************************************************
+BANCOS   **************************************
 % Banco contra IVA pagado:
 					   
 select aa.name, aj.name as name, am.name as ref, am.date, 0 as base16, 0 as base0, 0 as baseexento, 0 as base16nodeducible, 
@@ -141,7 +141,7 @@ from account_move_line aml
 join account_move am on am.id=aml.move_id
 join account_account aa on aa.id=aml.account_id
 join account_journal aj on aj.id=aml.journal_id
-where aml.company_id=1 and aml.journal_id not in (4,77) and aml.date between '01-feb-2019' and '28-feb-2019' and 
+where aml.company_id=1 and aml.journal_id not in (4,77) and aml.date between '01-apr-2019' and '30-apr-2019' and 
    aml.account_id in (349,410,3773,3771)
 group by aa.name, aj.name, am.name, am.date
 order by aa.name, aj.name, am.name, am.date
@@ -172,7 +172,7 @@ left join account_invoice ai on ai.number=am.ref
 join account_account aa on aa.id=aml.account_id
 left join res_partner p on p.id=aml.partner_id
 where aml.company_id=1 and left(am.ref,2) not in ('FP','NP') and aml.journal_id in (4,77) and 
-   aml.date between '01-feb-2019' and '28-feb-2019' and 
+   aml.date between '01-apr-2019' and '30-apr-2019' and 
    (aml.account_id in (410,455,747) or amlat.account_tax_id >0)
 group by am.ref, ai.date, am.name, p.name
 order by am.ref asc
