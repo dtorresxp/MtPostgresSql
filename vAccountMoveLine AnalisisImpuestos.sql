@@ -1,4 +1,4 @@
-% summarized report
+﻿% summarized report
 select am.name, am.ref, am.date, ai.state, 
    sum(case when amlat.account_tax_id>0 then debit-credit end) as Subtotal,
    sum(case when ati.amount=8  then (debit-credit)*ati.amount/100 
@@ -49,7 +49,7 @@ having abs(sum (
         when atl.amount=2.5 then -(debit-credit) 
 	    else 0 end
 			)  )>0.5
-order by am.ref desc
+order by am.date desc
 
 ****************************
 aa.id 349=119.01.02 Iva Acred pagado,  754=119.01.03 Iva Acred Ex, 770=119.01.04 Iva Acred 0
