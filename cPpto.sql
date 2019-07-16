@@ -17,6 +17,7 @@ select
    join mis_report_kpi mk on mk.id=mke.kpi_id
    left join mis_report_subkpi msk on msk.id=mke.subkpi_id
    where budget_id=1 and msk.name in ('idn','ifi','erp');
+GRANT SELECT ON TABLE "dC"."vPptoServices19" TO public;
    
 ****** Adding 
 select * from "dC"."vPptoConEdoResServices19";
@@ -34,3 +35,4 @@ from "dC"."vPptoServices19" p
 full join "dC"."vEdoResPptoServices19" r on 
    p.pr01=r.pr01 and p.pr02=r.pr02 and p.analytic=r.analytic and 
    p.business=r.business and p.date=r.date 
+GRANT SELECT ON TABLE "dC"."vPptoConEdoResServices19" TO public;

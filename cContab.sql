@@ -42,6 +42,8 @@ where aml.company_id=1 and am.state='posted' and aml.date between '2019-01-01' a
          join account_account_tag aati on aati.id=aaati.account_account_tag_id 
          where left(aati.name,2)='pr')
 order by am.name ;
+GRANT SELECT ON TABLE "dC"."vEdoResServices19" TO public;
+
 *********************
 select * from "dC"."vEdoResPptoServices19";
 DROP VIEW "dC"."vEdoResPptoServices19";
@@ -49,3 +51,4 @@ CREATE OR REPLACE VIEW "dC"."vEdoResPptoServices19" AS
 select pr01, pr02, analytic, business, date_trunc('month',date) as date, sum(balance) as balance
 from "dC"."vEdoResServices19"
 group by pr01, pr02, analytic, business, date_trunc('month',date);
+GRANT SELECT ON TABLE "dC"."vEdoResPptoServices19" TO public;

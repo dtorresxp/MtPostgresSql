@@ -1,5 +1,4 @@
-﻿% summarized report
-select am.name, am.ref, am.date, ai.state, 
+﻿select am.name, am.ref, am.date, ai.state, 
    sum(case when amlat.account_tax_id>0 then debit-credit end) as Subtotal,
    sum(case when ati.amount=8  then (debit-credit)*ati.amount/100 
             when atl.amount=8  then -(debit-credit)    end) as DifIva8,

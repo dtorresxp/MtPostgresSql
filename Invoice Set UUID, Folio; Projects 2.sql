@@ -23,7 +23,8 @@ join account_analytic_tag aat on aat.id=ai.account_analytic_tag_id
 where company_id=1 and ai.date>='2018-11-01' and ai.state not in ('cancel','draft')
 
 %%% set account_invoice header: Analytic_account, Project;  lines: Project
-select id, move_name, account_analytic_id, account_analytic_tag_id from account_invoice where id in (35563,32499,32678,32850,34205,32986,34091,33624)
+select id, move_name, account_analytic_id, account_analytic_tag_id from account_invoice where id in (4338)
+%update account_invoice set account_analytic_id=4 where id in (4338)
 %update account_invoice set account_analytic_id=4, account_analytic_tag_id=949 where id in (31270,32986)
 %update account_invoice set account_analytic_tag_id=949 where id in (35563,32499,32678,32850,34205,32986,34091,33624)
 select id, invoice_id, name, account_analytic_id from account_invoice_line where invoice_id in (35563,32499,32678,32850,34205,32986,34091,33624)
