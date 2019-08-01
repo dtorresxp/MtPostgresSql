@@ -4,13 +4,15 @@ CREATE OR REPLACE VIEW "dC"."vCxcCxp" AS
 select c.name as company, p.name as partner, 
    case when left(ai.type,2)='in' then 'Proveedores' else 'Clientes' end as in_out, 
    case when right(ai.type,7)='invoice' then 'invoice' else 'refund' end as type, 
-   ai.number, ai.date_invoice, ai.date_due, ai.origin, aaa.name as analytic, aat.name as project, rp.name customer, 
+   ai.number, ai.date_invoice, ai.collection_date, ai.origin, aaa.name as analytic, aat.name as project, 
+   case when left(ai.type,2)='in' then rp.name else '' end as customer, 
    ai.collection_status, 
    case when left(ai.type,2)='in' then -ai.amount_total_signed else ai.amount_total_signed end as amount_total_signed, 
    case when left(ai.type,2)='in' then -ai.amount_total_company_signed else ai.amount_total_company_signed end as amount_total_company_signed, 
    case when left(ai.type,2)='in' then -ai.residual_signed else ai.residual_signed end as residual_signed, 
    case when left(ai.type,2)='in' then -ai.residual_company_signed else ai.residual_company_signed end as residual_company_signed, 
-   ai.residual_company_signed as residual_company_original_signed
+   ai.residual_company_signed as residual_company_original_signed, 
+   concat('http://erp.mtnmx.com/web#id=',ai.id,'&view_type=form&model=account.invoice&action=303&menu_id=189') as InvoiceUrl 
 from account_invoice ai 
 join res_partner p on p.id=ai.partner_id
 join res_company c on c.id=ai.company_id
