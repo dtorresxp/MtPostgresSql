@@ -4,7 +4,14 @@ CREATE OR REPLACE VIEW "dC"."vCxcCxp" AS
 select c.name as company, p.name as partner, 
    case when left(ai.type,2)='in' then 'Proveedores' else 'Clientes' end as in_out, 
    case when right(ai.type,7)='invoice' then 'invoice' else 'refund' end as type, 
-   ai.number, ai.date_invoice, ai.collection_date, ai.origin, aaa.name as analytic, aat.name as project, 
+   ai.number, ai.date_invoice, 
+   case when ai.collection_date is not null then ai.collection_date 
+   else 
+      case when left(ai.type,2)='in' then ai.date_due
+         else null 
+      end 
+   end as collection_date, 
+   ai.origin, aaa.name as analytic, aat.name as project,
    case when left(ai.type,2)='in' then rp.name else '' end as customer, 
    ai.collection_status, 
    case when left(ai.type,2)='in' then -ai.amount_total_signed else ai.amount_total_signed end as amount_total_signed, 
