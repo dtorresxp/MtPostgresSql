@@ -1,0 +1,3 @@
+﻿to reprocess a payment at the bank statement that has a sat stamped payment
+select * from account_bank_statement_line where move_name='BDTJ8/2019/00321'
+* update account_bank_statement_line set move_name=null where move_name='BDTJ8/2019/00321'

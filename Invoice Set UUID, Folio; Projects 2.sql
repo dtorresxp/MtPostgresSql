@@ -40,3 +40,7 @@ select move_name, date_invoice from Account_invoice where id=19854
 %update account_invoice set date_invoice='2018-01-29' where id=19854
 select * from Account_invoice where id=19854
 
+%%% set account_invoice_line: account_id
+select * from account_invoice_line where invoice_id=40161
+%update account_invoice_line set account_id=3879 where invoice_id=40161    3879=Devol16%
+
