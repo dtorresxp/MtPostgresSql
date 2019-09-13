@@ -7,7 +7,7 @@ select id, name, account_analytic_tag_id from purchase_order  where id in (9558,
 %update purchase_order set account_analytic_tag_id=949 where id in (9558,9534,9514,9510,9409,9530,9430)
 
 % updates Origin at Purchase Order 
-select id, name, account_analytic_tag_id from purchase_order  where id in (11427)
-%update purchase_order set origin='SO05095' where id in (11427)
+select id, name, account_analytic_tag_id from purchase_order  where id in (12763)
+%update purchase_order set origin='SO05409' where id in (12763)
 
 

@@ -1,7 +1,7 @@
 ﻿http://www.postgresqltutorial.com/psql-commands/
 
 DATABASE "mt10";
-
+ 
 CREATE SCHEMA "dC"
   AUTHORIZATION hector;
 GRANT ALL ON SCHEMA "dC" TO hector;
@@ -9,8 +9,7 @@ GRANT USAGE ON SCHEMA "dC" TO reportes;
 COMMENT ON SCHEMA "dC"
   IS 'data Cube';
 
-drop view vedoresservices19 cascade;
-CREATE OR REPLACE VIEW vedoresservices19 AS 
+CREATE OR REPLACE VIEW "dC"."vEdoResServices19" AS 
 select 
    (select distinct substring(aat.name,5,25) 
       from account_account_tag aat 
@@ -28,7 +27,7 @@ select
       as Business, 
    am.name as move, am.date, aatype.name as type, aa.name as account, aml.credit-aml.debit as balance, 
    (select distinct name from res_partner rp where rp.id=am.partner_id) as partner, 
-   (select distinct concat(aat.name ,'[',aat.id,']') 
+   (select distinct aat.name 
       from account_analytic_tag aat 
       join account_analytic_tag_account_move_line_rel aatamlr on aatamlr.account_analytic_tag_id = aat.id
       where aatamlr.account_move_line_id=aml.id and aat.usage='project' limit 1) 
@@ -52,7 +51,7 @@ where aml.company_id=1 and am.state='posted' and aml.date between '2019-01-01' a
          join account_account_tag aati on aati.id=aaati.account_account_tag_id 
          where left(aati.name,2)='pr')
 order by am.name ;
-GRANT SELECT ON TABLE vedoresservices19 TO public;
+GRANT SELECT ON TABLE "dC"."vEdoResServices19" TO public;
 
 CREATE OR REPLACE VIEW "dC"."vEdoResPptoServices19" AS 
 select pr01, pr02, analytic, business, date_trunc('month',date) as date, sum(balance) as balance

@@ -3,7 +3,7 @@ from account_move_line aml
 join account_account aa on aa.id=aml.account_id
 join account_move am on am.id=aml.move_id
 join account_invoice ai on ai.move_id=am.id
-where aml.company_id=1 and aml.journal_id=77 and aml.date between '2019-07-01' and '2019-07-31' and
+where aml.company_id=1 and aml.journal_id=77 and aml.date between '2019-08-01' and '2019-08-31' and
    left(aa.code,6)='601.83' and aml.analytic_account_id is null
 
    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
