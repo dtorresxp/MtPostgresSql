@@ -79,7 +79,7 @@ join account_invoice ai on ai.number=right(am.ref,8)
 join account_account aa on aa.id=aml.account_id
 left join res_partner p on aml.partner_id=p.id
 left join res_partner pp on pp.id=p.commercial_partner_id
-where aml.company_id=1 and aml.journal_id in (4,77) and aml.date between '01-aug-2019' and '31-aug-2019' and 
+where aml.company_id=1 and aml.journal_id in (4,77) and aml.date between '01-sep-2019' and '30-sep-2019' and 
    (left(am.ref,2) in ('FP','NP')) and
    (aml.account_id in (349,754,770,3773) or amlat.account_tax_id >0) 
 group by pp.vat, pp.name, right(am.ref,8), aml.journal_id, amlat.account_tax_id, ai.date, aml.id
@@ -186,7 +186,7 @@ from account_move_line aml
 join account_move am on am.id=aml.move_id
 join account_account aa on aa.id=aml.account_id
 join account_journal aj on aj.id=aml.journal_id
-where aml.company_id=1 and aml.journal_id not in (4,77) and aml.date between '01-aug-2019' and '31-aug-2019' and 
+where aml.company_id=1 and aml.journal_id not in (4,77) and aml.date between '01-sep-2019' and '30-sep-2019' and 
    aml.account_id in (349,410,3773,3771)
 group by aa.name, aj.name, am.name, am.date
 order by aa.name, aj.name, am.name, am.date
@@ -217,7 +217,7 @@ left join account_invoice ai on ai.number=am.ref
 join account_account aa on aa.id=aml.account_id
 left join res_partner p on p.id=aml.partner_id
 where aml.company_id=1 and left(am.ref,2) not in ('FP','NP') and aml.journal_id in (4,77) and 
-   aml.date between '01-aug-2019' and '31-aug-2019' and 
+   aml.date between '01-sep-2019' and '30-sep-2019' and 
    (aml.account_id in (410,455,747) or amlat.account_tax_id >0)
 group by am.ref, ai.date, am.name, p.name
 order by am.ref asc

@@ -1,10 +1,15 @@
-﻿DROP VIEW "dC"."vCxcCxp" ;
+﻿DROP VIEW vcxccxp ;
 
-CREATE OR REPLACE VIEW "dC"."vCxcCxp" AS
-select c.name as company, p.name as partner, 
+CREATE OR REPLACE VIEW vcxccxp AS
+select c.name as company, 
+   case when p.company_type='company' then p.name
+      else 
+         case when rpp.name is null then p.name
+         else rpp.name end
+   end as partner, 
    case when left(ai.type,2)='in' then 'Proveedores' else 'Clientes' end as in_out, 
    case when right(ai.type,7)='invoice' then 'invoice' else 'refund' end as type, 
-   ai.number, ai.date_invoice, 
+   ai.number, ai.date_invoice, ai.date_due, 
    case when ai.collection_date is not null then ai.collection_date 
    else 
       case when left(ai.type,2)='in' then ai.date_due
@@ -27,10 +32,9 @@ join account_analytic_account aaa on aaa.id=ai.account_analytic_id
 left join account_analytic_tag aat on aat.id=ai.account_analytic_tag_id
 left join account_analytic_tag_res_partner_rel aatrpr on aatrpr.account_analytic_tag_id=ai.account_analytic_tag_id
 left join res_partner rp on rp.id=aatrpr.res_partner_id
+left join res_partner rpp on rpp.id=p.parent_id
 where ai.state='open' 
 order by p.name asc;
 
-ALTER TABLE "dC"."vCxcCxp"
-  OWNER TO jarsa;
-GRANT ALL ON TABLE "dC"."vCxcCxp" TO jarsa;
-GRANT SELECT ON TABLE "dC"."vCxcCxp" TO reportes;
+GRANT ALL ON TABLE vcxccxp TO cubos;
+

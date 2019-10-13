@@ -10,4 +10,6 @@ select id, name, account_analytic_tag_id from purchase_order  where id in (9558,
 select id, name, account_analytic_tag_id from purchase_order  where id in (12763)
 %update purchase_order set origin='SO05409' where id in (12763)
 
-
+% updates 
+select id, name, date_planned from purchase_order  where id in (12436)
+%update purchase_order set date_planned='2019-10-01' where id in (12436)
