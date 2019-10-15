@@ -1,6 +1,6 @@
 ﻿select po.name, left(po.origin,7) as origin, po.date_order, rp.display_name as partner, po.amount_untaxed as po_amount_untaxed, 
    aat.name as project, rp2.display_name project_customer,
-   po.state as po_state, po.partner_ref, po.amount_total as po_amount_total, po.invoice_status as po_incoice_status, pol.create_date, 
+   po.state as po_state, po.partner_ref, po.amount_total as po_amount_total, po.invoice_status as po_invoice_status, pol.create_date, 
    aaa.name as analytic, pol.name as line, 
    pol.price_unit as pol_price_unit, pol.product_qty as pol_product_qty, pol.qty_invoiced as pol_qty_invoiced, pol.purchase_status as pol_purchase_status, 
    rc.name as currency, rcr.name as currency_name, 1/rcr.rate as currency_rate
@@ -13,8 +13,8 @@ join res_currency rc on rc.id=pol.currency_id
 join res_currency_rate rcr on rcr.currency_id=pol.currency_id 
 left join account_analytic_tag_res_partner_rel aatrpr on aatrpr.account_analytic_tag_id=po.account_analytic_tag_id
 left join res_partner rp2 on rp2.id=aatrpr.res_partner_id
-where pol.state='purchase' and 
-   rc.active and rcr.company_id=1 and rcr.name=current_date;
+where po.state in ('done','purchase') and 
+rc.active and rcr.company_id=1 and rcr.name=current_date;
 
 select current_date;
 
@@ -27,3 +27,15 @@ select rc.name, rc.symbol, rcr.name, rcr.rate
 from res_currency rc
 join res_currency_rate rcr on rcr.currency_id=rc.id
 where rc.active and rcr.company_id=1 and rcr.name=current_date
+
+select po_incoice_status, count(*) from vodc where po_state in ('done','purchase')
+group by po_incoice_status;
+
+select distinct(po_state) from vodc;
+
+select po_state, count(*) from vodc where po_incoice_status='no'
+group by po_state
+
+select po_state, count(*) from vodc 
+group by po_state
+
