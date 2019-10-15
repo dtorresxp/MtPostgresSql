@@ -18,7 +18,7 @@ select c.name as company,
    end as collection_date, ai.collection_date as planned_payment_date, 
    ai.origin, aaa.name as analytic, aat.name as project,
    case when left(ai.type,2)='in' then rp.name else '' end as customer, 
-   ai.collection_status, 
+   ai.collection_status, rc.name as currency, 
    case when left(ai.type,2)='in' then -ai.amount_total_signed else ai.amount_total_signed end as amount_total_signed, 
    case when left(ai.type,2)='in' then -ai.amount_total_company_signed else ai.amount_total_company_signed end as amount_total_company_signed, 
    case when left(ai.type,2)='in' then -ai.residual_signed else ai.residual_signed end as residual_signed, 
@@ -33,6 +33,7 @@ left join account_analytic_tag aat on aat.id=ai.account_analytic_tag_id
 left join account_analytic_tag_res_partner_rel aatrpr on aatrpr.account_analytic_tag_id=ai.account_analytic_tag_id
 left join res_partner rp on rp.id=aatrpr.res_partner_id
 left join res_partner rpp on rpp.id=p.parent_id
+left join res_currency rc on rc.id=ai.currency_id
 where ai.state='open' 
 order by p.name asc;
 
