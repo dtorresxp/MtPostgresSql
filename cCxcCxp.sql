@@ -15,7 +15,7 @@ select c.name as company,
       case when left(ai.type,2)='in' then ai.date_due
          else null 
       end 
-   end as collection_date, 
+   end as collection_date, ai.collection_date as planned_payment_date, 
    ai.origin, aaa.name as analytic, aat.name as project,
    case when left(ai.type,2)='in' then rp.name else '' end as customer, 
    ai.collection_status, 
