@@ -1,0 +1,49 @@
+﻿select 
+   rc.name as company_long, 
+   case 
+      when position('Services' in rc.name)>0 then 'Services'
+      when position('Mexico' in rc.name)>0 then 'Mexico'
+      else 'rc.name indef'
+   end as company, 
+   (select distinct substring(aat.name,5,25) 
+      from account_account_tag aat 
+      join account_account_account_tag aaat on aaat.account_account_tag_id=aat.id
+      where aaat.account_account_id=aa.id and left(aat.name,4)='pr01' limit 1) as pr01,
+   (select distinct substring(aat.name,5,25) 
+      from account_account_tag aat 
+      join account_account_account_tag aaat on aaat.account_account_tag_id=aat.id
+      where aaat.account_account_id=aa.id and left(aat.name,4)='pr02' limit 1) as pr02, 
+    aaa.name as analytic, 
+   (select distinct substring(aat.name,3,3)
+      from account_analytic_tag aat 
+      join account_analytic_tag_account_move_line_rel aatamlr on aatamlr.account_analytic_tag_id = aat.id
+      where aatamlr.account_move_line_id=aml.id and aat.usage='business' and left(aat.name,2)='B:' limit 1) 
+      as Business, 
+   am.name as move, am.date, aatype.name as type, aa.name as account, aml.credit-aml.debit as balance, 
+   (select distinct name from res_partner rp where rp.id=am.partner_id) as partner, 
+   (select distinct concat(aat.name ,'[',aat.id,']') 
+      from account_analytic_tag aat 
+      join account_analytic_tag_account_move_line_rel aatamlr on aatamlr.account_analytic_tag_id = aat.id
+      where aatamlr.account_move_line_id=aml.id and aat.usage='project' limit 1) 
+      as Project, 
+   (select distinct rp.name 
+      from account_analytic_tag aat 
+      join account_analytic_tag_account_move_line_rel aatamlr on aatamlr.account_analytic_tag_id = aat.id
+      left join account_analytic_tag_res_partner_rel aatrpr on aatrpr.account_analytic_tag_id=aat.id
+      left join res_partner rp on rp.id=aatrpr.res_partner_id
+      where aatamlr.account_move_line_id=aml.id and aat.usage='project' limit 1) 
+      as ProjCustomer 
+from account_move_line aml
+join account_move am on am.id=aml.move_id
+join account_account aa on aa.id=aml.account_id
+left join account_analytic_account aaa on aaa.id=aml.analytic_account_id
+join account_account_type aatype on aatype.id=aa.user_type_id
+join account_journal aj on aj.id=aml.journal_id
+join res_company rc on rc.id=aml.company_id 
+where aml.company_id in (1,4) and am.state='posted' and aml.date >= '2019-01-01' and aj.code != 'DCA' and 
+   ((aj.code='TIMP' and aa.name like 'No Deducibles IVA%') or aj.code!='TIMP') and 
+   aa.id in (
+      select distinct aaati.account_account_id from account_account_account_tag aaati 
+         join account_account_tag aati on aati.id=aaati.account_account_tag_id 
+         where left(aati.name,2)='pr')
+order by am.name ;
