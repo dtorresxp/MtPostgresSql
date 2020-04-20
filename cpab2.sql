@@ -2,7 +2,7 @@
 % Comapnias:      1=Services;   3=ServiciosProfesionales;   4=Mexico
 
 % PROVEEDORES con formato de DIOT ********************************************************************
-select pp.vat, 
+select pp.vat, pp.name, 
    sum(case when amlat.account_tax_id=43 then 
 	      case when aml.journal_id=4 then (debit-credit)/1.16 else debit-credit end 
 	   else 0 end)
@@ -14,7 +14,7 @@ select pp.vat,
    sum(case when amlat.account_tax_id=51  then debit-credit else 0 end) as Base0,
    sum(case when amlat.account_tax_id=49  then debit-credit else 0 end) as BaseExento,	   
    sum(case when amlat.account_tax_id=165 then debit-credit else 0 end) as Base8NoDeducible,	   
-   sum(case when amlat.account_tax_id=53  then debit-credit else 0 end) as Base16NoDeducible,	   
+   sum(case when amlat.account_tax_id=53  then debit-credit else 0 end) as Base16NoDeducible,
    sum(case when amlat.account_tax_id in (47,46,45,167) then 
 		   case when amlat.account_tax_id in (45,46) then (debit-credit)*.1067 
 			   	when amlat.account_tax_id=47 then (debit-credit)*.04 
@@ -32,20 +32,17 @@ select pp.vat,
 from account_move_line aml
 left join account_move_line_account_tax_rel amlat on aml.id=amlat.account_move_line_id
 join account_move am on am.id=aml.move_id
-join account_invoice ai on ai.number=right(am.ref,8)
 join account_account aa on aa.id=aml.account_id
 left join res_partner p on aml.partner_id=p.id
 left join res_partner pp on pp.id=p.commercial_partner_id
-where aml.company_id=1 and aml.journal_id in (4,77) and aml.date between '01-may-2019' and '31-may-2019' and 
+where aml.company_id=1 and aml.journal_id in (4,77) and aml.date between '01-mar-2020' and '31-mar-2020' and 
    (left(am.ref,2) in ('FP','NP')) and
    (aml.account_id in (349,754,770,3773) or amlat.account_tax_id >0) 
-group by pp.vat 
-order by pp.vat
+group by pp.vat, pp.name
+order by pp.vat, pp.name
 
-
-
-% PROVEEDORES para enviar a contab para revisar *********************************************************
-select pp.vat, pp.name, right(am.ref,8) as ref, aml.journal_id, amlat.account_tax_id, ai.date, aml.id,
+% PROVEEDORES con detalle completo *********************************************************
+select pp.vat, pp.name, right(am.ref,8) as ref, am.ref as fref, aml.journal_id, amlat.account_tax_id, aml.id,
    sum(case when amlat.account_tax_id=43 then 
 	      case when aml.journal_id=4 then (debit-credit)/1.16 else debit-credit end 
 	   else 0 end)
@@ -57,7 +54,7 @@ select pp.vat, pp.name, right(am.ref,8) as ref, aml.journal_id, amlat.account_ta
    sum(case when amlat.account_tax_id=51  then debit-credit else 0 end) as Base0,
    sum(case when amlat.account_tax_id=49  then debit-credit else 0 end) as BaseExento,	   
    sum(case when amlat.account_tax_id=165 then debit-credit else 0 end) as Base8NoDeducible,	   
-   sum(case when amlat.account_tax_id=53  then debit-credit else 0 end) as Base16NoDeducible,	   
+   sum(case when amlat.account_tax_id=53  then debit-credit else 0 end) as Base16NoDeducible,
    sum(case when amlat.account_tax_id in (47,46,45,167) then 
 		   case when amlat.account_tax_id in (45,46) then (debit-credit)*.1067 
 			   	when amlat.account_tax_id=47 then (debit-credit)*.04 
@@ -75,15 +72,19 @@ select pp.vat, pp.name, right(am.ref,8) as ref, aml.journal_id, amlat.account_ta
 from account_move_line aml
 left join account_move_line_account_tax_rel amlat on aml.id=amlat.account_move_line_id
 join account_move am on am.id=aml.move_id
-join account_invoice ai on ai.number=right(am.ref,8)
 join account_account aa on aa.id=aml.account_id
 left join res_partner p on aml.partner_id=p.id
 left join res_partner pp on pp.id=p.commercial_partner_id
-where aml.company_id=1 and aml.journal_id in (4,77) and aml.date between '01-apr-2019' and '30-apr-2019' and 
+where aml.company_id=1 and aml.journal_id in (4,77) and aml.date between '01-mar-2020' and '31-mar-2020' and 
    (left(am.ref,2) in ('FP','NP')) and
    (aml.account_id in (349,754,770,3773) or amlat.account_tax_id >0) 
-group by pp.vat, pp.name, right(am.ref,8), aml.journal_id, amlat.account_tax_id, ai.date, aml.id
-order by pp.vat, pp.name, right(am.ref,8), aml.journal_id, amlat.account_tax_id
+group by pp.vat, pp.name, right(am.ref,8), am.ref, aml.journal_id, amlat.account_tax_id, aml.id
+order by pp.vat, pp.name, right(am.ref,8), am.ref, aml.journal_id, amlat.account_tax_id
+
+349 - 119.01.02 - Iva acreditable pagado 16%
+754 - 119.01.03 - Iva acreditable exento
+770 - 119.01.04 - Iva acreditable tasa 0
+3773- 119.01.11 - Iva acreditable pagado 8%
 
 ***WIP ***************************************************** PARA REPORTAR:
 select 
@@ -186,7 +187,7 @@ from account_move_line aml
 join account_move am on am.id=aml.move_id
 join account_account aa on aa.id=aml.account_id
 join account_journal aj on aj.id=aml.journal_id
-where aml.company_id=1 and aml.journal_id not in (4,77) and aml.date between '01-may-2019' and '31-may-2019' and 
+where aml.company_id=1 and aml.journal_id not in (4,77) and aml.date between '01-mar-2020' and '31-mar-2020' and 
    aml.account_id in (349,410,3773,3771)
 group by aa.name, aj.name, am.name, am.date
 order by aa.name, aj.name, am.name, am.date
@@ -217,7 +218,7 @@ left join account_invoice ai on ai.number=am.ref
 join account_account aa on aa.id=aml.account_id
 left join res_partner p on p.id=aml.partner_id
 where aml.company_id=1 and left(am.ref,2) not in ('FP','NP') and aml.journal_id in (4,77) and 
-   aml.date between '01-may-2019' and '31-may-2019' and 
+   aml.date between '01-dec-2019' and '31-dec-2019' and 
    (aml.account_id in (410,455,747) or amlat.account_tax_id >0)
 group by am.ref, ai.date, am.name, p.name
 order by am.ref asc
