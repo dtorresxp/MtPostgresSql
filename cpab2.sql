@@ -2,7 +2,7 @@
 % Comapnias:      1=Services;   3=ServiciosProfesionales;   4=Mexico
 
 % PROVEEDORES con formato de DIOT ********************************************************************
-select pp.vat, pp.name, 
+select pp.vat, pp.name, c.name, pp.l10n_mx_type_of_operation, 
    sum(case when amlat.account_tax_id=43 then 
 	      case when aml.journal_id=4 then (debit-credit)/1.16 else debit-credit end 
 	   else 0 end)
@@ -35,11 +35,12 @@ join account_move am on am.id=aml.move_id
 join account_account aa on aa.id=aml.account_id
 left join res_partner p on aml.partner_id=p.id
 left join res_partner pp on pp.id=p.commercial_partner_id
+left join res_country c on c.id=pp.country_id
 where aml.company_id=1 and aml.journal_id in (4,77) and aml.date between '01-mar-2020' and '31-mar-2020' and 
    (left(am.ref,2) in ('FP','NP')) and
    (aml.account_id in (349,754,770,3773) or amlat.account_tax_id >0) 
-group by pp.vat, pp.name
-order by pp.vat, pp.name
+group by pp.vat, pp.name, c.name, pp.l10n_mx_type_of_operation
+order by pp.vat, pp.name, c.name, pp.l10n_mx_type_of_operation
 
 % PROVEEDORES con detalle completo *********************************************************
 select pp.vat, pp.name, right(am.ref,8) as ref, am.ref as fref, aml.journal_id, amlat.account_tax_id, aml.id,
